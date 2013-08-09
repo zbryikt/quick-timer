@@ -6,8 +6,14 @@ handler = null
 latency = 0
 stop-by = null
 delay = 300000
+is-show = 1
+
+show = ->
+  is-show := 1 - is-show
+  $ \.fbtn .css \opacity, if is-show => \1.0 else \0.1
 
 adjust = (it,v) ->
+  if is-blink => return
   delay := delay + it * 1000
   if it==0 => delay := v * 1000
   if delay <= 0 => delay := 0

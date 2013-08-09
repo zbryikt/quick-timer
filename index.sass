@@ -3,6 +3,12 @@ html, body
   padding: 0
   width: 100%
   height: 100%
+  -webkit-touch-callout: none
+  -webkit-user-select: none
+  -khtml-user-select: none
+  -moz-user-select: moz-none
+  -ms-user-select: none
+  user-select: none
 
 #timer
   width: 100%
@@ -14,19 +20,24 @@ html, body
   font-weight: 700
   font-family: century gothic
 
-#toggle, #reset, #min10, #min60, #add10, #add60, #def60, #def180, #def300
+#hide, #toggle, #reset, #min10, #min60, #add10, #add60, #def10, #def30, #def60, #def180, #def300, #def600, #def1800
   position: absolute
   top: 5px
   left: 50%
   margin-left: -210px
-  width: 200px
-  height: 32px
+  width: 170px
+  height: 44px
+  line-height: 30px
 #reset
-  margin-left: 10px
+  margin-left: 50px
+#hide
+  margin-left: -30px
+  width: 70px
 
 #min10, #min60, #add10, #add60
   width: 50px
-#def60, #def180, #def300
+
+#def10, #def30, #def60, #def180, #def300, #def600, #def1800
   bottom: 5px
   top: auto
   width: 70px
@@ -38,9 +49,18 @@ html, body
   margin-left: 230px
 #add60
   margin-left: 290px
+
+#def10
+  margin-left: -285px
+#def30
+  margin-left: -205px
 #def60
   margin-left: -125px
 #def180
   margin-left: -45px
 #def300
   margin-left: 35px
+#def600
+  margin-left: 115px
+#def1800
+  margin-left: 195px

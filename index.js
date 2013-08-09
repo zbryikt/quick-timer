@@ -1,4 +1,4 @@
-var start, isBlink, isLight, isRun, handler, latency, stopBy, delay, adjust, toggle, reset, blink, count, run, resize;
+var start, isBlink, isLight, isRun, handler, latency, stopBy, delay, isShow, show, adjust, toggle, reset, blink, count, run, resize;
 start = null;
 isBlink = 0;
 isLight = 1;
@@ -7,7 +7,15 @@ handler = null;
 latency = 0;
 stopBy = null;
 delay = 300000;
+isShow = 1;
+show = function(){
+  isShow = 1 - isShow;
+  return $('.fbtn').css('opacity', isShow ? '1.0' : '0.1');
+};
 adjust = function(it, v){
+  if (isBlink) {
+    return;
+  }
   delay = delay + it * 1000;
   if (it === 0) {
     delay = v * 1000;

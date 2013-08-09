@@ -9,12 +9,17 @@ html
     script(type="text/javascript",src="index.js")
   body
     #timer ????
-    a#min60.btn.btn-info(onclick="adjust(-60)") -60
-    a#min10.btn.btn-info(onclick="adjust(-10)") -10
+    a#min60.btn.btn-info.fbtn(onclick="adjust(-60)") -60
+    a#min10.btn.btn-info.fbtn(onclick="adjust(-10)") -10
     a#toggle.btn.btn-primary(onclick="toggle()") RUN
     a#reset.btn.btn-warning(onclick="reset()") RESET
-    a#add10.btn.btn-info(onclick="adjust(10)") +10
-    a#add60.btn.btn-info(onclick="adjust(60)") +60
-    a#def60.btn.btn-success(onclick="adjust(0,60)") 1 min
-    a#def180.btn.btn-success(onclick="adjust(0,180)") 3 min
-    a#def300.btn.btn-success(onclick="adjust(0,300)") 5 min
+    a#hide.btn.btn-default(onclick="show()") &#xd60;
+    a#add10.btn.btn-info.fbtn(onclick="adjust(10)") +10
+    a#add60.btn.btn-info.fbtn(onclick="adjust(60)") +60
+    a#def10.btn.btn-success.fbtn(onclick="adjust(0,60)") 10 sec
+    a#def30.btn.btn-success.fbtn(onclick="adjust(0,180)") 30 sec
+    a#def60.btn.btn-success.fbtn(onclick="adjust(0,60)") 1 min
+    a#def180.btn.btn-success.fbtn(onclick="adjust(0,180)") 3 min
+    a#def300.btn.btn-success.fbtn(onclick="adjust(0,300)") 5 min
+    a#def600.btn.btn-success.fbtn(onclick="adjust(0,600)") 10 min
+    a#def1800.btn.btn-success.fbtn(onclick="adjust(0,1800)") 30 min
