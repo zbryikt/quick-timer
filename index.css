@@ -10,7 +10,9 @@ html, body {
   line-height: 100%;
   background: black;
   color: white;
-  text-align: center; }
+  text-align: center;
+  font-weight: 700;
+  font-family: century gothic; }
 
 #toggle {
   position: absolute;
