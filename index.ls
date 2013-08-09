@@ -1,32 +1,68 @@
+start = null
+is-blink = 0
+is-light = 1
 is-run = 0
+handler = null
+latency = 0
+stop-by = null
+delay = 300000
+
+adjust = (it,v) ->
+  delay := delay + it * 1000
+  if it==0 => delay := v * 1000
+  if delay <= 0 => delay := 0
+  $ \#timer .text (delay)
+  resize!
+
 toggle = ->
   is-run := 1 - is-run
-  if !is-run and handler => clearInterval handler
+  $ \#toggle .text if is-run => "STOP" else "RUN"
+  if !is-run and handler => 
+    stop-by := new Date!
+    clearInterval handler
+    handler := null
+  if stop-by =>
+    latency := latency + (new Date!)getTime! - stop-by.getTime!
   if is-run => run!
 
-is-light = 0
+reset = ->
+  stop-by := 0
+  is-blink := 0
+  latency := 0
+  start := new Date!
+  is-run := 1
+  toggle!
+  if handler => clearInterval handler
+  handler := null
+  $ \#timer .text delay
+  $ \#timer .css \color, \#fff
+  resize!
+
+
 blink = ->
+  is-blink := 1
   is-light := 1 - is-light
   $ \#timer .css \color, if is-light => \#fff else \#f00
 
-handler = null
 count = ->
   tm = $ \#timer
-  diff = start.getTime! - (new Date!)getTime! + 3000
- #300000
-  if diff < 0 and is-light == 0 => 
-    is-light := 1
+  diff = start.getTime! - (new Date!)getTime! + delay + latency
+  if diff < 0 and is-blink == 0 => 
+    is-blink := 1
     diff = 0
     clearInterval handler
     handler := setInterval ( -> blink!), 500
   tm.text "#{diff}"
   resize!
 
-start = null
-run = ->
+run =  ->
+  if start == null =>
+    start := new Date!
+    latency := 0
+    is-blink := 0
   if handler => clearInterval handler
-  else start := new Date!
-  handler := setInterval (-> count!), 100
+  if is-blink => handler := setInterval (-> blink!), 500
+  else handler := setInterval (-> count!), 100
 
 resize = ->
   tm = $ \#timer
@@ -39,5 +75,7 @@ resize = ->
   tm.css \line-height, "#{h}px"
 
 
-window.onload = -> resize!
+window.onload = -> 
+  $ \#timer .text delay
+  resize!
 window.onresize = -> resize!
