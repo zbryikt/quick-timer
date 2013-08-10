@@ -1,4 +1,4 @@
-var start, isBlink, isLight, isRun, handler, latency, stopBy, delay, isShow, show, adjust, toggle, reset, blink, count, run, resize;
+var start, isBlink, isLight, isRun, handler, latency, stopBy, delay, isShow, audioRemind, audioEnd, newAudio, soundToggle, show, adjust, toggle, reset, blink, count, run, resize;
 start = null;
 isBlink = 0;
 isLight = 1;
@@ -6,8 +6,27 @@ isRun = 0;
 handler = null;
 latency = 0;
 stopBy = null;
-delay = 300000;
+delay = 61000;
 isShow = 1;
+audioRemind = null;
+audioEnd = null;
+newAudio = function(file){
+  var node;
+  node = new Audio();
+  node.src = file;
+  node.loop = true;
+  node.load();
+  document.body.appendChild(node);
+  return node;
+};
+soundToggle = function(des, state){
+  if (state) {
+    return des.play();
+  } else {
+    des.currentTime = 0;
+    return des.pause();
+  }
+};
 show = function(){
   isShow = 1 - isShow;
   return $('.fbtn').css('opacity', isShow ? '1.0' : '0.1');
@@ -33,6 +52,8 @@ toggle = function(){
     stopBy = new Date();
     clearInterval(handler);
     handler = null;
+    soundToggle(audioEnd, false);
+    soundToggle(audioRemind, false);
   }
   if (stopBy) {
     latency = latency + new Date().getTime() - stopBy.getTime();
@@ -42,6 +63,11 @@ toggle = function(){
   }
 };
 reset = function(){
+  if (delay === 0) {
+    delay = 1000;
+  }
+  soundToggle(audioRemind, false);
+  soundToggle(audioEnd, false);
   stopBy = 0;
   isBlink = 0;
   latency = 0;
@@ -65,7 +91,14 @@ count = function(){
   var tm, diff;
   tm = $('#timer');
   diff = start.getTime() - new Date().getTime() + delay + latency;
+  if (diff < 60000) {
+    soundToggle(audioRemind, true);
+  }
+  if (diff < 55000) {
+    soundToggle(audioRemind, false);
+  }
   if (diff < 0 && isBlink === 0) {
+    soundToggle(audioEnd, true);
     isBlink = 1;
     diff = 0;
     clearInterval(handler);
@@ -105,12 +138,13 @@ resize = function(){
     len = 3;
   }
   tm.css('font-size', 1.5 * w / len + "px");
-  console.log(w, len);
   return tm.css('line-height', h + "px");
 };
 window.onload = function(){
   $('#timer').text(delay);
-  return resize();
+  resize();
+  audioRemind = newAudio('audio/cop-car.mp3');
+  return audioEnd = newAudio('audio/fire-alarm.mp3');
 };
 window.onresize = function(){
   return resize();
