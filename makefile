@@ -1,4 +1,4 @@
 all:
-	jade index.jade
-	sass index.sass index.css
-	livescript -cb index.ls
+	pug index.pug
+	stylus -p index.styl > index.css
+	lsc -cb index.ls
