@@ -8,7 +8,7 @@ let's count down!
 
 Demo
 ----------
-please check [this demo](http://zbryikt.github.io/quick_timer) for this timer. 
+please check [this demo](http://zbryikt.github.io/quick-timer) for this timer.
 
 License
 ----------
