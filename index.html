@@ -1,1 +1,44 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" type="text/css" href="bootstrap3.min.css"><link rel="stylesheet" type="text/css" href="index.css"><script type="text/javascript" src="jquery-1.10.2.min.js"></script><script type="text/javascript" src="bootstrap3.min.js"></script><script type="text/javascript" src="index.js"></script></head><body><div id="timer">????</div><a class="btn btn-info fbtn" id="min60" onclick="adjust(-60)">-60</a><a class="btn btn-info fbtn" id="min10" onclick="adjust(-10)">-10</a><a class="btn btn-primary" id="toggle" onclick="toggle()">RUN</a><a class="btn btn-warning" id="reset" onclick="reset()">RESET</a><a class="btn btn-default" id="hide" onclick="show()">&#xd60;</a><a class="btn btn-info fbtn" id="add10" onclick="adjust(10)">+10</a><a class="btn btn-info fbtn" id="add60" onclick="adjust(60)">+60</a><a class="btn btn-success fbtn" id="def10" onclick="adjust(0,10)">10 sec</a><a class="btn btn-success fbtn" id="def30" onclick="adjust(0,30)">30 sec</a><a class="btn btn-success fbtn" id="def60" onclick="adjust(0,60)">1 min</a><a class="btn btn-success fbtn" id="def180" onclick="adjust(0,180)">3 min</a><a class="btn btn-success fbtn" id="def300" onclick="adjust(0,300)">5 min</a><a class="btn btn-success fbtn" id="def600" onclick="adjust(0,600)">10 min</a><a class="btn btn-success fbtn" id="def900" onclick="adjust(0,900)">15 min</a><a class="btn btn-success fbtn" id="def1800" onclick="adjust(0,1800)">30 min</a></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="bootstrap3.min.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="bootstrap3.min.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+</head>
+<body>
+  <div id="sky">
+    <div id="sun-wrap">
+      <div id="sun-rays"></div>
+      <div id="sun"></div>
+      <div id="rooster" aria-hidden="true">🐥</div>
+    </div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+    <div id="timer">????</div>
+  </div>
+  <a class="btn btn-info fbtn" id="min60" onclick="adjust(-60)">-60</a>
+  <a class="btn btn-info fbtn" id="min10" onclick="adjust(-10)">-10</a>
+  <a class="btn btn-primary" id="toggle" onclick="toggle()">RUN</a>
+  <a class="btn btn-warning" id="reset" onclick="reset()">RESET</a>
+  <a class="btn btn-default" id="hide" onclick="show()">&#xd60;</a>
+  <a class="btn btn-info fbtn" id="add10" onclick="adjust(10)">+10</a>
+  <a class="btn btn-info fbtn" id="add60" onclick="adjust(60)">+60</a>
+  <a class="btn btn-success fbtn" id="def10" onclick="setPresetCountdown(10)">10 sec</a>
+  <a class="btn btn-success fbtn" id="def30" onclick="setPresetCountdown(30)">30 sec</a>
+  <a class="btn btn-success fbtn" id="def60" onclick="setPresetCountdown(60)">1 min</a>
+  <a class="btn btn-success fbtn" id="def180" onclick="setPresetCountdown(180)">3 min</a>
+  <div id="custom-countdown-form" aria-label="Set custom countdown">
+    <input id="custom-countdown" type="text" placeholder="mm:ss or seconds" aria-label="Countdown input">
+    <button id="apply-countdown" class="btn btn-success" type="button" onclick="setCustomCountdown()">Set</button>
+    <div id="countdown-status" aria-live="polite"></div>
+  </div>
+  <a class="btn btn-success fbtn" id="def300" onclick="setPresetCountdown(300)">5 min</a>
+  <a class="btn btn-success fbtn" id="def600" onclick="setPresetCountdown(600)">10 min</a>
+  <a class="btn btn-success fbtn" id="def900" onclick="setPresetCountdown(900)">15 min</a>
+  <a class="btn btn-success fbtn" id="def1800" onclick="setPresetCountdown(1800)">30 min</a>
+</body>
+</html>

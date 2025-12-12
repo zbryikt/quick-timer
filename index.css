@@ -10,17 +10,195 @@ body {
   -moz-user-select: moz-none;
   -ms-user-select: none;
   user-select: none;
+  overflow: hidden;
 }
+
+#sky {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #8fd3ff 0%, #cfefff 60%, #f7fbff 100%);
+  overflow: hidden;
+}
+
+#sun-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: -60vh;
+  transform: translateX(-50%);
+  transition: bottom 0.4s linear;
+  pointer-events: none;
+  z-index: 9;
+}
+
+#sun {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: var(--sun-size, 105px);
+  height: var(--sun-size, 105px);
+  margin-left: calc(var(--sun-size, 105px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fffbe0, #ffd972 60%, #ffb52a 100%);
+  box-shadow: 0 0 70px rgba(255, 193, 55, 0.9), 0 0 140px rgba(255, 193, 55, 0.55);
+  transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+  opacity: 0.85;
+}
+
+#sun-rays {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: var(--sun-ray-size, 189px);
+  height: var(--sun-ray-size, 189px);
+  margin-left: calc(var(--sun-ray-size, 189px) / -2);
+  border-radius: 50%;
+  overflow: hidden;
+  filter: blur(1px);
+  opacity: 0.25;
+  transform: scale(0.9);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+#sun-rays::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 225, 120, 0.55) 0deg, rgba(255, 225, 120, 0.55) 12deg, rgba(255, 225, 120, 0) 28deg, rgba(255, 225, 120, 0) 40deg);
+  animation: spin 16s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#rooster {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--sun-size, 210px) + 10px);
+  transform: translateX(-50%);
+  font-size: 68px;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.15));
+  pointer-events: none;
+  z-index: 11;
+}
+
+#rooster.show {
+  opacity: 1;
+}
+
+#rooster.flap {
+  animation: flap 0.55s ease-in-out 3 forwards;
+}
+
+@keyframes flap {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(8px) rotate(-10deg);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(10deg);
+  }
+}
+
+.cloud {
+  position: absolute;
+  top: 15%;
+  width: 180px;
+  height: 60px;
+  background: #fff;
+  border-radius: 50px;
+  box-shadow: 40px 10px 0 10px #fff, 90px 15px 0 5px #fff, 130px 5px 0 0 #fff;
+  opacity: 0.85;
+  animation: drift 48s linear infinite;
+}
+
+.cloud:before,
+.cloud:after {
+  content: "";
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.cloud:before {
+  width: 60px;
+  height: 60px;
+  top: -25px;
+  left: 20px;
+}
+
+.cloud:after {
+  width: 80px;
+  height: 80px;
+  top: -35px;
+  left: 70px;
+}
+
+.cloud.c1 {
+  top: 20%;
+  left: -200px;
+  animation-duration: 52s;
+}
+
+.cloud.c2 {
+  top: 35%;
+  left: -320px;
+  animation-duration: 60s;
+  animation-delay: -10s;
+  transform: scale(1.2);
+}
+
+.cloud.c3 {
+  top: 55%;
+  left: -260px;
+  animation-duration: 56s;
+  animation-delay: -20s;
+  transform: scale(0.9);
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(140%);
+  }
+}
+
 #timer {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   line-height: 100%;
-  background: #000;
   color: #fff;
   text-align: center;
   font-weight: 700;
-  font-family: century gothic;
+  font-family: century gothic, "Helvetica Neue", Arial, sans-serif;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  cursor: pointer;
+  z-index: 5;
 }
+
 #hide,
 #toggle,
 #reset,
@@ -43,20 +221,25 @@ body {
   width: 170px;
   height: 44px;
   line-height: 30px;
+  z-index: 10;
 }
+
 #reset {
   margin-left: 50px;
 }
+
 #hide {
   margin-left: -30px;
   width: 70px;
 }
+
 #min10,
 #min60,
 #add10,
 #add60 {
   width: 50px;
 }
+
 #def10,
 #def30,
 #def60,
@@ -69,48 +252,98 @@ body {
   top: auto;
   width: 70px;
 }
+
+#custom-countdown-form {
+  position: absolute;
+  bottom: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  z-index: 12;
+}
+
+#custom-countdown {
+  width: 150px;
+  border: 1px solid #b1c5d6;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+#apply-countdown {
+  height: 32px;
+  line-height: 18px;
+  padding: 6px 12px;
+}
+
+#countdown-status {
+  min-width: 120px;
+  font-size: 13px;
+  color: #2b6e3f;
+  font-weight: 600;
+}
+
 #min10 {
   margin-left: -270px;
 }
+
 #min60 {
   margin-left: -330px;
 }
+
 #add10 {
   margin-left: 230px;
 }
+
 #add60 {
   margin-left: 290px;
 }
+
 #def10 {
   margin-left: -285px;
 }
+
 #def30 {
   margin-left: -205px;
 }
+
 #def60 {
   margin-left: -125px;
 }
+
 #def180 {
   margin-left: -45px;
 }
+
 #def300 {
   margin-left: 35px;
 }
+
 #def600 {
   margin-left: 115px;
 }
+
 #def900 {
   margin-left: 195px;
 }
+
 #def1800 {
   margin-left: 275px;
 }
+
 #audio {
   position: absolute;
   bottom: 30px;
   right: 10px;
   z-index: 10;
 }
+
 #xxx {
   position: absolute;
   top: 10px;

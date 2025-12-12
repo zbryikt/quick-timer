@@ -9,16 +9,94 @@ html, body
   -moz-user-select: moz-none
   -ms-user-select: none
   user-select: none
+  overflow: hidden
+
+#sky
+  position: relative
+  width: 100%
+  height: 100%
+  background: linear-gradient(180deg, #8fd3ff 0%, #cfefff 60%, #f7fbff 100%)
+  overflow: hidden
+
+#sun
+  position: absolute
+  left: 50%
+  bottom: -25vh
+  width: 140px
+  height: 140px
+  margin-left: -70px
+  border-radius: 50%
+  background: radial-gradient(circle at 30% 30%, #fff7c7, #ffd25a 60%, #ffba29 100%)
+  box-shadow: 0 0 40px rgba(255, 188, 38, 0.7), 0 0 80px rgba(255, 188, 38, 0.35)
+  transition: bottom 0.4s linear
+
+.cloud
+  position: absolute
+  top: 15%
+  width: 180px
+  height: 60px
+  background: #fff
+  border-radius: 50px
+  box-shadow: 40px 10px 0 10px #fff, 90px 15px 0 5px #fff, 130px 5px 0 0 #fff
+  opacity: 0.85
+  animation: drift 48s linear infinite
+  &:before, &:after
+    content: ""
+    position: absolute
+    background: #fff
+    border-radius: 50%
+  &:before
+    width: 60px
+    height: 60px
+    top: -25px
+    left: 20px
+  &:after
+    width: 80px
+    height: 80px
+    top: -35px
+    left: 70px
+
+.cloud.c1
+  top: 20%
+  left: -200px
+  animation-duration: 52s
+
+.cloud.c2
+  top: 35%
+  left: -320px
+  animation-duration: 60s
+  animation-delay: -10s
+  transform: scale(1.2)
+
+.cloud.c3
+  top: 55%
+  left: -260px
+  animation-duration: 56s
+  animation-delay: -20s
+  transform: scale(0.9)
+
+@keyframes drift
+  0%
+    transform: translateX(0)
+  100%
+    transform: translateX(140%)
 
 #timer
+  position: absolute
+  top: 0
+  left: 0
   width: 100%
   height: 100%
   line-height: 100%
-  background: #000
   color: #fff
   text-align: center
   font-weight: 700
-  font-family: century gothic
+  font-family: century gothic, "Helvetica Neue", Arial, sans-serif
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.35)
+  display: flex
+  align-items: center
+  justify-content: center
+  pointer-events: none
 
 #hide, #toggle, #reset, #min10, #min60, #add10, #add60, #def10, #def30, #def60, #def180, #def300, #def600, #def900, #def1800
   position: absolute
@@ -28,6 +106,7 @@ html, body
   width: 170px
   height: 44px
   line-height: 30px
+  z-index: 10
 #reset
   margin-left: 50px
 #hide
