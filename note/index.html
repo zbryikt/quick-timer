@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quick Timer: Then &amp; Neo</title>
+<style>
+:root {
+  --bg: #0b0b0c;
+  --fg: #f2f2f2;
+  --dim: #9a9a9f;
+  --line: #ffffff1f;
+  --accent: #ffcc33;
+  --hot: #ff4d4d;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, "Helvetica Neue", "PingFang TC", "Noto Sans TC", Arial, sans-serif;
+  overflow: hidden;
+}
+a { color: var(--accent); }
+.deck { position: relative; width: 100%; height: 100%; }
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6vh 7vw 9vh;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+}
+/* old slide fades out first, then the new one comes in */
+.slide.on { opacity: 1; transform: none; pointer-events: auto; transition: opacity .4s .18s, transform .4s .18s; }
+.slide.past { transform: translateX(-40px); }
+.kicker {
+  font-size: 13px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+h1 { font-size: clamp(36px, 7vw, 92px); line-height: 1.02; margin: 0 0 18px; letter-spacing: -.02em; }
+h2 { font-size: clamp(26px, 3.6vw, 46px); margin: 0 0 22px; letter-spacing: -.01em; }
+p.lead { font-size: clamp(16px, 1.8vw, 22px); color: var(--dim); max-width: 46em; line-height: 1.6; margin: 0; }
+.cols { display: grid; grid-template-columns: 1.5fr 1fr; gap: 4vw; align-items: center; }
+.shot {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  display: block;
+  box-shadow: 0 20px 60px #000;
+}
+.cap { font-size: 13px; color: var(--dim); margin-top: 8px; }
+ul.pts { margin: 0; padding-left: 1.1em; font-size: clamp(15px, 1.45vw, 19px); line-height: 1.75; }
+ul.pts li::marker { color: var(--accent); }
+ul.pts b { color: #fff; }
+.cols.photo { grid-template-columns: auto 1fr; }
+.cols.photo .shot { width: auto; max-height: 72vh; max-width: 100%; }
+.row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; }
+.row2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5vw; margin-bottom: 22px; }
+.log { width: 100%; border-collapse: collapse; font-size: clamp(12px, 1.2vw, 15px); }
+.log td { padding: 5px 12px 5px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.log td:last-child { white-space: normal; width: 100%; }
+.log .d { color: var(--dim); font-variant-numeric: tabular-nums; }
+.log .h { font-family: ui-monospace, Menlo, monospace; color: var(--accent); }
+.log .a { color: var(--dim); }
+.log tr.gap td { border-bottom: 1px dashed var(--accent); }
+.vs { width: 100%; border-collapse: collapse; font-size: clamp(13px, 1.3vw, 17px); }
+.vs th, .vs td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.vs th { color: var(--accent); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+.vs td:first-child { color: var(--dim); white-space: nowrap; }
+.links { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+.links a {
+  text-decoration: none;
+  border: 1px solid var(--line);
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: var(--fg);
+  font-size: 17px;
+}
+.links a:hover { border-color: var(--accent); }
+.big-num {
+  font-size: clamp(60px, 13vw, 180px);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.big-num .ms { font-size: .42em; color: var(--dim); }
+.hot { color: var(--hot); }
+nav {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--dim);
+  z-index: 5;
+}
+nav button {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--fg);
+  border-radius: 8px;
+  width: 36px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 15px;
+}
+nav button:hover { border-color: var(--accent); }
+.bar { flex: 1; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .4s; }
+@media (max-width: 760px) {
+  html, body { overflow: auto; }
+  .slide { position: relative; opacity: 1; transform: none; pointer-events: auto; min-height: 100vh; padding: 48px 16px 64px; }
+  .cols, .row3, .row2 { grid-template-columns: 1fr; }
+  .log td.a { display: none; }
+  nav { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <section class="slide">
+    <div class="kicker">zbryikt / quick-timer · 2013 → 2026</div>
+    <h1>Quick Timer<br>Then &amp; <span style="color:var(--accent)">Neo</span></h1>
+    <p class="lead">一個全螢幕倒數計時器的兩個版本：2013 年八月一天寫完的原版，和加上心跳、殘影、玻璃碎裂的新版。</p>
+    <div class="links">
+      <a href="../">⏱ Classic</a>
+      <a href="../neo/">🆕 Neo</a>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Classic · 2013</div>
+    <div class="cols">
+      <div>
+        <img class="shot" src="img/old.jpg" alt="原版 quick-timer：黑底白色大字顯示剩餘毫秒數 298399，上方有 -60 / -10 / STOP / RESET / +10 / +60 按鈕，下方有 10 sec 到 30 min 的預設時間按鈕">
+        <div class="cap">原版：直接顯示剩餘的毫秒數</div>
+      </div>
+      <div>
+        <h2>原版</h2>
+        <ul class="pts">
+          <li>Pug + Stylus + <b>LiveScript</b>，jQuery 1.10 + Bootstrap 3</li>
+          <li>黑底大字，數字是<b>剩餘毫秒</b>，字級依寬度縮放</li>
+          <li>±10 / ±60 秒、預設 10 秒 ~ 30 分</li>
+          <li>剩 1 分鐘播 <b>Hurry up</b>，時間到播音效並紅白閃爍</li>
+          <li>按鈕可淡出，不擋畫面</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">In the wild · 2013.08</div>
+    <div class="cols photo">
+      <div>
+        <img class="shot" src="img/2013-08.jpg" alt="2013 年 8 月的活動現場：講者在講台前拿麥克風發言，前排筆電上開著 quick-timer，畫面顯示 2065">
+      </div>
+      <div>
+        <h2>實際上場</h2>
+        <p class="lead">2013 年 8 月，寫完的當月就在活動現場用來幫講者計時。</p>
+        <p class="lead" style="margin-top:18px">筆電上的 <b style="color:var(--fg)">2065</b>：單位是毫秒，代表只剩 <span class="hot">2.065 秒</span>。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">git log --reverse</div>
+    <h2>15 commits，大半在第一天</h2>
+    <table class="log">
+      <tr><td class="d">2013-08-09</td><td class="h">9c3de7c</td><td class="a">zbryikt</td><td>Initial commit</td></tr>
+      <tr><td class="d">2013-08-09</td><td class="h">15b236d</td><td class="a">Kirby T. Wu</td><td>add init version</td></tr>
+      <tr><td class="d">2013-08-09</td><td class="h">717e8b5</td><td class="a">Kirby T. Wu</td><td>fix negative time; tweak style</td></tr>
+      <tr><td class="d">2013-08-09</td><td class="h">4b9abfc</td><td class="a">Kirby T. Wu</td><td>add delay adjust functionality</td></tr>
+      <tr><td class="d">2013-08-09</td><td class="h">0605349</td><td class="a">Kirby T. Wu</td><td>add panel toggle, various predefined time</td></tr>
+      <tr><td class="d">2013-08-09</td><td class="h">9a7456f</td><td class="a">Kirby T. Wu</td><td>fix btn function issue (10sec and 60sec malfunction)</td></tr>
+      <tr><td class="d">2013-08-09</td><td class="h">50e8a87</td><td class="a">Kirby T. Wu</td><td>add screenshot</td></tr>
+      <tr class="gap"><td class="d">2013-08-09</td><td class="h">f148176</td><td class="a">Kirby T. Wu</td><td>update README for license, screenshot and demo</td></tr>
+      <tr><td class="d">2013-08-10</td><td class="h">f5ac8e3</td><td class="a">Kirby T. Wu</td><td>add sound effects</td></tr>
+      <tr><td class="d">2013-08-10</td><td class="h">a3faf06</td><td class="a">Kirby T. Wu</td><td>update readme</td></tr>
+      <tr class="gap"><td class="d">2013-08-10</td><td class="h">bd49a6f</td><td class="a">Kirby T. Wu</td><td>add missed index.html</td></tr>
+      <tr><td class="d">2013-10-19</td><td class="h">b04d1fb</td><td class="a">Kirby T. Wu</td><td>add new sound effect; fix timer inaccurate issue</td></tr>
+      <tr><td class="d">2014-01-21</td><td class="h">a331cb9</td><td class="a">youreevil</td><td>Compress_Images</td></tr>
+      <tr><td class="d">2016-03-06</td><td class="h">527c075</td><td class="a">zbryikt</td><td>Merge pull request #1 from ghost/Compress_Images</td></tr>
+      <tr><td class="d">2019-02-22</td><td class="h">459965d</td><td class="a">Kirby Wu</td><td>add 15min</td></tr>
+    </table>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Neo · 2026</div>
+    <div class="cols">
+      <div>
+        <img class="shot" src="img/neo-normal.jpg" alt="新版：黑底白字顯示 4:59.652，毫秒以小字顯示，上方有按鈕列與設定按鈕，右上角有快捷鍵說明">
+        <div class="cap">新版：m:ss + 毫秒小字</div>
+      </div>
+      <div>
+        <h2>新版</h2>
+        <ul class="pts">
+          <li>單一 Pug 檔，內嵌 Stylus + LiveScript，<b>無外部套件</b></li>
+          <li><b>m:ss.mmm</b>，等寬數字填滿畫面</li>
+          <li>鍵盤操作：Space / R / F / 方向鍵 / 數字 + Enter</li>
+          <li>網址帶時間：<code>#5m</code>、<code>#90s</code></li>
+          <li>閒置 2.5 秒自動隱藏控制列</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">The last minute</div>
+    <h2>最後 60 秒：心跳</h2>
+    <div class="row2">
+      <div>
+        <img class="shot" src="img/neo-60s.jpg" alt="剩 58 秒：黃色數字帶橘色殘影與光暈">
+        <div class="cap">≤ 60s · 每秒一下 · 黃色</div>
+      </div>
+      <div>
+        <img class="shot" src="img/neo-10s.jpg" alt="剩 11 秒：白色數字帶紅色殘影、RGB 色差、橫向 glitch 與紅色暗角">
+        <div class="cap">≤ 30s · 每 0.5 秒一下 · 殘影、色差、glitch</div>
+      </div>
+    </div>
+    <ul class="pts">
+      <li>數字畫到 canvas，再進 <b>WebGL shader</b>：放大、RGB 分離、徑向模糊、上一幀殘影、紅色暗角</li>
+      <li>「咚—咚」雙拍，對齊秒數換位的瞬間；搭配<b>低沉有迴音的滴答</b>與<b>喘氣聲</b></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">00:00.000</div>
+    <h2>時間到：玻璃碎裂</h2>
+    <div class="row3">
+      <div>
+        <img class="shot" src="img/neo-crack.jpg" alt="0:00.000 紅字上出現放射狀玻璃裂痕">
+        <div class="cap">1 · 裂痕擴散</div>
+      </div>
+      <div>
+        <img class="shot" src="img/neo-shatter.jpg" alt="碎片帶著數字往外飛散、旋轉">
+        <div class="cap">2 · 碎片飛散</div>
+      </div>
+      <div>
+        <img class="shot" src="img/neo-timesup.jpg" alt="黑底上方小字紅色 00:00.000，中央大字白色 Times Up">
+        <div class="cap">3 · Times Up</div>
+      </div>
+    </div>
+    <ul class="pts" style="margin-top:22px">
+      <li>計時停在 0；約 84 片放射狀碎片，帶重力、旋轉、殘影軌跡</li>
+      <li>小字 <span class="hot">00:00.000</span> 彈性 zoom in，<b>Times Up</b> 逐字模糊落下</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Settings</div>
+    <div class="cols">
+      <div>
+        <img class="shot" src="img/neo-settings.jpg" alt="設定面板：Tick & Breath 音量、Tick always on、Breath always on、1-minute music、Time's up music、Music volume">
+      </div>
+      <div>
+        <h2>聲音</h2>
+        <ul class="pts">
+          <li><b>滴答</b>：CC0 錄音降調 + 合成低頻 + 3 秒大廳殘響</li>
+          <li><b>喘氣</b>：CC0 錄音循環，越接近 0 越快越大聲</li>
+          <li>可設定 <b>always on</b>，平常也有滴答與呼吸</li>
+          <li>保留原版音樂：1 分鐘 Hurry up、時間到 Game over</li>
+          <li>碎玻璃聲以 Web Audio 即時合成</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Diff</div>
+    <h2>原版 vs 新版</h2>
+    <table class="vs">
+      <tr><th></th><th>Classic (2013)</th><th>Neo (2026)</th></tr>
+      <tr><td>顯示</td><td>剩餘毫秒 <code>298399</code></td><td><code>4:59</code><span style="color:var(--dim)">.652</span></td></tr>
+      <tr><td>計時</td><td><code>setInterval</code> 100ms</td><td><code>performance.now()</code> + rAF</td></tr>
+      <tr><td>依賴</td><td>jQuery + Bootstrap 3</td><td>無</td></tr>
+      <tr><td>畫面</td><td>DOM 文字、紅白閃爍</td><td>Canvas + WebGL 後製</td></tr>
+      <tr><td>聲音</td><td>兩段 mp3</td><td>原版音樂 + 滴答 + 喘氣 + 碎玻璃</td></tr>
+      <tr><td>時間到</td><td>繼續閃爍</td><td>停止 → 碎裂 → Times Up</td></tr>
+      <tr><td>操作</td><td>滑鼠</td><td>滑鼠、鍵盤、網址 hash、設定面板</td></tr>
+    </table>
+  </section>
+
+  <section class="slide">
+    <div class="big-num">0:00<span class="ms">.000</span></div>
+    <h2 style="margin-top:18px">Try it</h2>
+    <div class="links">
+      <a href="../">⏱ Classic</a>
+      <a href="../neo/">🆕 Neo</a>
+      <a href="https://github.com/zbryikt/quick-timer">GitHub</a>
+    </div>
+  </section>
+
+</div>
+
+<nav>
+  <button id="prev" aria-label="previous">←</button>
+  <button id="next" aria-label="next">→</button>
+  <div class="bar"><i id="prog"></i></div>
+  <span id="count"></span>
+</nav>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var cur = 0;
+  function go(n) {
+    cur = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, i) {
+      s.classList.toggle('on', i === cur);
+      s.classList.toggle('past', i < cur);
+    });
+    document.getElementById('prog').style.width = ((cur + 1) / slides.length * 100) + '%';
+    document.getElementById('count').textContent = (cur + 1) + ' / ' + slides.length;
+    history.replaceState(null, '', '#' + (cur + 1));
+  }
+  document.getElementById('prev').onclick = function () { go(cur - 1); };
+  document.getElementById('next').onclick = function () { go(cur + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].indexOf(e.key) >= 0) { go(cur + 1); e.preventDefault(); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].indexOf(e.key) >= 0) { go(cur - 1); e.preventDefault(); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length - 1);
+  });
+  // swipe
+  var sx = null;
+  document.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (sx === null) return;
+    var dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+    sx = null;
+  });
+  function fromHash() { go((parseInt(location.hash.slice(1), 10) || 1) - 1); }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>

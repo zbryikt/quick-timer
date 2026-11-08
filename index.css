@@ -116,3 +116,18 @@ body {
   top: 10px;
   left: 10px;
 }
+#neo {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 10;
+  font-size: 28px;
+  line-height: 1;
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 0.2s, transform 0.2s;
+}
+#neo:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
